@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 
 function App() {
@@ -11,13 +12,40 @@ function App() {
   },[]) */
 
   const [productos,setProductos] = useState([])
+  const [error,setError] = useState(null)
 
-  useEffect(()=>{
+  /* useEffect(()=>{
     fetch('https://fakestoreapi.com/products')
     .then(response => response.json())
     .then(data => setProductos(data));
+  },[]) */
 
+  /* useEffect(()=>{
+    async function traerProductos() {
+      try {
+        const respuesta = await fetch('https://fakestoreapi.com/products')
+        const data = await respuesta.json()
+        setProductos(data)
+      } catch (error) {
+        console.error("Algo salió mal:", error )
+      }
+    }
+    traerProductos()
+  },[]) */
+
+  useEffect(()=>{
+    async function obtenerProductos() {
+      try {
+        const {data} = await axios.get("https://fakestoreapi.com/products")
+        setProductos(data)
+      } catch (error) {
+        console.error("Algo salió mal:", error )
+        setError("Error al cargar datos")
+      }
+    }
+    obtenerProductos()
   },[])
+
 
   return (
     <>
@@ -37,6 +65,9 @@ function App() {
           </div>
         ))
       }
+      <p className=' text-red-500 text-5xl'>{error}</p>
+      
+      
       
     </>
   )
